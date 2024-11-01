@@ -8,9 +8,18 @@ from test_framework.test_utils import enable_executor_hook
 NUM_PEGS = 3
 
 
+def move(n, src, dst):
+    another = sum(range(3)) - src - dst
+    if n == 1:
+        yield [src, dst]
+    else:
+        yield from move(n - 1, src, another)
+        yield from move(1, src, dst)
+        yield from move(n - 1, another, dst)
+
+
 def compute_tower_hanoi(num_rings: int) -> List[List[int]]:
-    # TODO - you fill in here.
-    return []
+    return list(move(num_rings, 0, 2))
 
 
 @enable_executor_hook
