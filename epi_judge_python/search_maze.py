@@ -11,11 +11,30 @@ WHITE, BLACK = range(2)
 
 Coordinate = collections.namedtuple('Coordinate', ('x', 'y'))
 
+def neighbors(maze, c: Coordinate):
+    N = len(maze)
+    M = len(maze[0])
+    i, j = c
+    for (di, dj) in [(-1, 0), (0, 1), (1, 0), (0, -1)]:
+        if 0 <= i + di < N and 0 <= j + dj < M and maze[i+di][j+dj] != BLACK:
+            yield Coordinate(i + di, j + dj)
+
+def dfs(maze, path: List[Coordinate], e: Coordinate):
+    if path[-1] == e:
+        return path
+    i, j = path[-1]
+    maze[i][j] = BLACK
+
+    for n in neighbors(maze, path[-1]):
+        p = dfs(maze, path+[n], e)
+        if p:
+            return p
+    return []
+
 
 def search_maze(maze: List[List[int]], s: Coordinate,
                 e: Coordinate) -> List[Coordinate]:
-    # TODO - you fill in here.
-    return []
+    return dfs(maze, [s], e)
 
 
 def path_element_is_feasible(maze, prev, cur):
