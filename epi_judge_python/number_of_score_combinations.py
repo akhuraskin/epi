@@ -2,29 +2,15 @@ from typing import List, Dict
 
 from test_framework import generic_test
 
-
-def f(n: int, individual_play_scores: List[int], cache: Dict[int, int]) -> int:
-    key = (n, tuple(individual_play_scores))
-    if key in cache:
-        return cache[key]
-    elif n < 0:
-        return 0
-    elif n == 0:
-        return 1
-
-    f_ = 0
-    for i in range(len(individual_play_scores)):
-        f_ += f(n-individual_play_scores[i], individual_play_scores[i:], cache)
-    cache[key] = f_
-    return f_
-
-
-
 def num_combinations_for_final_score(final_score: int,
                                      individual_play_scores: List[int]) -> int:
-    cache = {0: 1}
-    return f(final_score, individual_play_scores, cache)
+    dp = [0]*(final_score+1)
+    dp[0] = 1
 
+    for play_score in individual_play_scores:
+        for fscore in range(play_score, final_score+1):
+            dp[fscore] += dp[fscore-play_score]
+    return dp[final_score]
 
 if __name__ == '__main__':
     exit(
